@@ -1,39 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import * as api from './BooksAPI';
 import BooksGrid from './BooksGrid';
 
 class ListBooks extends Component {
-  state = {
-    books: []
-  }
 
-  changeShelf = (event, bookId) => {
-    const booksUpdated = this.state.books.map(book => {
-      if(book.id === bookId) {
-        book.bookShelf = event.target.value;
-      }
-      return book;
-    });
-
-    this.setState({ books: booksUpdated })
-  }
-
-  componentDidMount() {
-    api.getAll()
-    .then( (books) => {
-      const updatedBooks = books.map((book) => {
-        book.bookShelf = 'currentlyReading';        
-        return book;
-      });
-
-      this.setState({
-        books: updatedBooks
-      })
-    });
+  changeShelf = (event, book) => {
+    this.props.updateBookShelf(book, event.target.value)
   }
 
   render() {
+    const { books } = this.props;
+
     return (
       <div className="list-books">
         <div className="list-books-title">
@@ -46,7 +23,7 @@ class ListBooks extends Component {
               <div className="bookshelf-books">
                 <BooksGrid 
                   shelf="currentlyReading"
-                  books={this.state.books} 
+                  books={books} 
                   toggleBookShelf={this.changeShelf}
                 />
               </div>
@@ -57,7 +34,7 @@ class ListBooks extends Component {
               <div className="bookshelf-books">
                 <BooksGrid 
                   shelf="wantToRead"
-                  books={this.state.books}
+                  books={books}
                   toggleBookShelf={this.changeShelf}
                 />
               </div>
@@ -67,7 +44,7 @@ class ListBooks extends Component {
               <div className="bookshelf-books">
                 <BooksGrid 
                   shelf="read"
-                  books={this.state.books}
+                  books={books}
                   toggleBookShelf={this.changeShelf}
                 />
               </div>
